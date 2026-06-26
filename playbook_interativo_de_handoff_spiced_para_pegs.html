@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equity Force - Blueprint de Handoff</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts (Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome para ícones premium -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#fff1f2',
+                            100: '#ffe4e6',
+                            200: '#fecdd3',
+                            500: '#f43f5e',
+                            600: '#e11d48',
+                            700: '#be123c',
+                            900: '#881337',
+                        },
+                        dark: {
+                            900: '#090d16',
+                            800: '#111827',
+                            700: '#1f2937',
+                            600: '#374151',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #090d16;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111827;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #f43f5e;
+        }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col pb-12 antialiased selection:bg-brand-600 selection:text-white">
+
+    <!-- Header / Barra de Identidade -->
+    <header class="border-b border-slate-800 bg-dark-800/80 backdrop-blur sticky top-0 z-50 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-brand-600 text-white p-2.5 rounded-xl shadow-lg shadow-brand-600/30 flex items-center justify-center">
+                    <i class="fa-solid fa-gears text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                        EQUITY FORCE <span class="text-xs bg-slate-700 text-brand-500 font-semibold px-2 py-0.5 rounded-full border border-slate-600">SQUAD GESTÃO</span>
+                    </h1>
+                    <p class="text-xs text-slate-400">Blueprint de Handoff Sistêmico: Do SPICED para o Backlog de PEGS</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="text-xs bg-dark-900 border border-slate-800 px-3 py-1.5 rounded-lg text-slate-400 flex items-center gap-2">
+                    <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    Operação Ongoing Escalonada (40 Contas)
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 md:px-6 mt-8 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Painel Lateral Esquerdo: Seletor de Travas (A Entrada do Sintoma) -->
+        <section class="lg:col-span-4 flex flex-col gap-6">
+            <div class="bg-dark-800 border border-slate-800 rounded-2xl p-6 shadow-xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+                    <i class="fa-solid fa-circle-exclamation text-8xl"></i>
+                </div>
+                
+                <h2 class="text-lg font-bold text-white flex items-center gap-2 mb-2">
+                    <i class="fa-solid fa-magnifying-glass-chart text-brand-500"></i>
+                    1. Selecione a Trava Ativa
+                </h2>
+                <p class="text-xs text-slate-400 mb-6">Mapeada no SPICED pela CSM durante a Reunião Estratégica na Semana 4. O clique mudará todo o fluxo de trabalho abaixo.</p>
+
+                <!-- Acordeon de Categorias -->
+                <div class="space-y-4" id="traps-accordion">
+                    
+                    <!-- Performance / Funil -->
+                    <div class="border border-slate-800 rounded-xl bg-dark-900/50 overflow-hidden">
+                        <button onclick="toggleAccordion('perf-funil')" class="w-full px-4 py-3 bg-dark-900/80 border-b border-slate-800 flex justify-between items-center hover:bg-dark-900 transition-colors">
+                            <span class="text-xs font-bold text-yellow-500 uppercase tracking-wider flex items-center gap-2">
+                                <i class="fa-solid fa-filter"></i> Performance / Funil
+                            </span>
+                            <i id="icon-perf-funil" class="fa-solid fa-chevron-down text-slate-500 text-xs transition-transform duration-200"></i>
+                        </button>
+                        <div id="content-perf-funil" class="p-2 space-y-1 block">
+                            <button onclick="selectTrap('volume_atracao')" id="btn-volume_atracao" class="w-full text-left text-xs p-3 rounded-lg hover:bg-slate-800 transition-all font-medium border border-transparent flex justify-between items-center text-slate-300">
+                                <span>Volume de Atração Insuficiente</span>
+                                <span class="bg-yellow-500/10 text-yellow-500 text-[10px] px-2 py-0.5 rounded">Mídia</span>
+                            </button>
+                            <button onclick="selectTrap('gargalo_comercial')" id="btn-gargalo_comercial" class="w-full text-left text-xs p-3 rounded-lg hover:bg-slate-800 transition-all font-medium border border-transparent flex justify-between items-center text-slate-300">
+                                <span>Gargalo de Conversão</span>
+                                <span class="bg-yellow-500/10 text-yellow-500 text-[10px] px-2 py-0.5 rounded">CRM</span>
+                            </button>
+                            <button onclick="selectTrap('custo_aquisicao')" id="btn-custo_aquisicao" class="w-full text-left text-xs p-3 rounded-lg hover:bg-slate-800 transition-all font-medium border border-transparent flex justify-between items-center text-slate-300">
+                                <span>Custo de Aquisição/Recorrência</span>
+                                <span class="bg-yellow-500/10 text-yellow-500 text-[10px] px-2 py-0.5 rounded">CAC</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Social Media / Branding -->
+                    <div class="border border-slate-800 rounded-xl bg-dark-900/50 overflow-hidden">
+                        <button onclick="toggleAccordion('social-brand')" class="w-full px-4 py-3 bg-dark-900/80 border-b border-slate-800 flex justify-between items-center hover:bg-dark-900 transition-colors">
+                            <span class="text-xs font-bold text-orange-500 uppercase tracking-wider flex items-center gap-2">
+                                <i class="fa-solid fa-bullhorn"></i> Social Media / Branding
+                            </span>
+                            <i id="icon-social-brand" class="fa-solid fa-chevron-down text-slate-500 text-xs transition-transform duration-200"></i>
+                        </button>
+                        <div id="content-social-brand" class="p-2 space-y-1 block">
+                            <button onclick="selectTrap('perda_posicionamento')" id="btn-perda_posicionamento" class="w-full text-left text-xs p-3 rounded-lg hover:bg-slate-800 transition-all font-medium border border-transparent flex justify-between items-center text-slate-300">
+                                <span>Perda de Posicionamento</span>
+                                <span class="bg-orange-500/10 text-orange-500 text-[10px] px-2 py-0.5 rounded">Editorial</span>
+                            </button>
+                            <button onclick="selectTrap('alcance_estagnado')" id="btn-alcance_estagnado" class="w-full text-left text-xs p-3 rounded-lg hover:bg-slate-800 transition-all font-medium border border-transparent flex justify-between items-center text-slate-300">
+                                <span>Alcance e Distribuição Estagnados</span>
+                                <span class="bg-orange-500/10 text-orange-500 text-[10px] px-2 py-0.5 rounded">Mídia</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Estrutura Comercial (Gargalos Internos) -->
+                    <div class="border border-slate-800 rounded-xl bg-dark-900/50 overflow-hidden">
+                        <button onclick="toggleAccordion('est-comercial')" class="w-full px-4 py-3 bg-dark-900/80 border-b border-slate-800 flex justify-between items-center hover:bg-dark-900 transition-colors">
+                            <span class="text-xs font-bold text-brand-500 uppercase tracking-wider flex items-center gap-2">
+                                <i class="fa-solid fa-shop"></i> Estrutura Comercial
+                            </span>
+                            <i id="icon-est-comercial" class="fa-solid fa-chevron-down text-slate-500 text-xs transition-transform duration-200"></i>
+                        </button>
+                        <div id="content-est-comercial" class="p-2 space-y-1 block">
+                            <button onclick="selectTrap('sales_enablement')" id="btn-sales_enablement" class="w-full text-left text-xs p-3 rounded-lg hover:bg-slate-800 transition-all font-medium border border-transparent flex justify-between items-center text-slate-300">
+                                <span>Sem Liderança / Enablement</span>
+                                <span class="bg-brand-500/10 text-brand-500 text-[10px] px-2 py-0.5 rounded">CRM</span>
+                            </button>
+                            <button onclick="selectTrap('capacidade_comercial')" id="btn-capacidade_comercial" class="w-full text-left text-xs p-3 rounded-lg hover:bg-slate-800 transition-all font-medium border border-transparent flex justify-between items-center text-slate-300">
+                                <span>Capacidade de Atendimento</span>
+                                <span class="bg-brand-500/10 text-brand-500 text-[10px] px-2 py-0.5 rounded">Vendedores</span>
+                            </button>
+                            <button onclick="selectTrap('ausencia_sdr')" id="btn-ausencia_sdr" class="w-full text-left text-xs p-3 rounded-lg hover:bg-slate-800 transition-all font-medium border border-transparent flex justify-between items-center text-slate-300">
+                                <span>Ausência de SDR / Triagem</span>
+                                <span class="bg-brand-500/10 text-brand-500 text-[10px] px-2 py-0.5 rounded">Pré-venda</span>
+                            </button>
+                            <button onclick="selectTrap('estouro_sla')" id="btn-estouro_sla" class="w-full text-left text-xs p-3 rounded-lg hover:bg-slate-800 transition-all font-medium border border-transparent flex justify-between items-center text-slate-300">
+                                <span>Estouro de SLA / Resposta</span>
+                                <span class="bg-brand-500/10 text-brand-500 text-[10px] px-2 py-0.5 rounded">Timing</span>
+                            </button>
+                            <button onclick="selectTrap('pos_vendas')" id="btn-pos_vendas" class="w-full text-left text-xs p-3 rounded-lg hover:bg-slate-800 transition-all font-medium border border-transparent flex justify-between items-center text-slate-300">
+                                <span>Inexistência de Pós-Venda</span>
+                                <span class="bg-brand-500/10 text-brand-500 text-[10px] px-2 py-0.5 rounded">LTV</span>
+                            </button>
+                            <button onclick="selectTrap('capacitacao_profissional')" id="btn-capacitacao_profissional" class="w-full text-left text-xs p-3 rounded-lg hover:bg-slate-800 transition-all font-medium border border-transparent flex justify-between items-center text-slate-300">
+                                <span>Defasagem Técnica</span>
+                                <span class="bg-brand-500/10 text-brand-500 text-[10px] px-2 py-0.5 rounded">Treinamento</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Dados / Automação -->
+                    <div class="border border-slate-800 rounded-xl bg-dark-900/50 overflow-hidden">
+                        <button onclick="toggleAccordion('dados-auto')" class="w-full px-4 py-3 bg-dark-900/80 border-b border-slate-800 flex justify-between items-center hover:bg-dark-900 transition-colors">
+                            <span class="text-xs font-bold text-teal-500 uppercase tracking-wider flex items-center gap-2">
+                                <i class="fa-solid fa-code"></i> Dados / Automação
+                            </span>
+                            <i id="icon-dados-auto" class="fa-solid fa-chevron-down text-slate-500 text-xs transition-transform duration-200"></i>
+                        </button>
+                        <div id="content-dados-auto" class="p-2 space-y-1 block">
+                            <button onclick="selectTrap('cegueira_dados')" id="btn-cegueira_dados" class="w-full text-left text-xs p-3 rounded-lg hover:bg-slate-800 transition-all font-medium border border-transparent flex justify-between items-center text-slate-300">
+                                <span>Cegueira de Dados</span>
+                                <span class="bg-teal-500/10 text-teal-500 text-[10px] px-2 py-0.5 rounded">Metrics</span>
+                            </button>
+                            <button onclick="selectTrap('processo_manual')" id="btn-processo_manual" class="w-full text-left text-xs p-3 rounded-lg hover:bg-slate-800 transition-all font-medium border border-transparent flex justify-between items-center text-slate-300">
+                                <span>Processo Comercial Manual</span>
+                                <span class="bg-teal-500/10 text-teal-500 text-[10px] px-2 py-0.5 rounded">Follow-up</span>
+                            </button>
+                            <button onclick="selectTrap('quebra_rastreabilidade')" id="btn-quebra_rastreabilidade" class="w-full text-left text-xs p-3 rounded-lg hover:bg-slate-800 transition-all font-medium border border-transparent flex justify-between items-center text-slate-300">
+                                <span>Quebra de Rastreabilidade</span>
+                                <span class="bg-teal-500/10 text-teal-500 text-[10px] px-2 py-0.5 rounded">API/Pixel</span>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Painel de Detalhes Central: O Handoff em Ação -->
+        <section class="lg:col-span-8 flex flex-col gap-6">
+            
+            <!-- Banner Dinâmico da Restrição Ativa -->
+            <div class="bg-gradient-to-r from-slate-900 to-dark-800 border border-slate-800 rounded-2xl p-6 shadow-xl relative overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div class="absolute top-0 left-0 h-1.5 w-full bg-brand-600" id="top-border-accent"></div>
+                <div>
+                    <div class="text-[10px] uppercase font-extrabold tracking-widest text-slate-400 mb-1">Diagnóstico Ativo no Handoff</div>
+                    <h2 class="text-2xl font-extrabold text-white tracking-tight" id="active-trap-title">Volume de Atração Insuficiente</h2>
+                    <p class="text-xs text-slate-400 mt-1 flex items-center gap-1.5">
+                        <i class="fa-solid fa-users-gear" id="active-trap-category-icon"></i>
+                        Pilar de Impacto: <span class="font-semibold text-slate-200" id="active-trap-category">Performance / Funil</span>
+                    </p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="bg-slate-800/80 border border-slate-700 px-4 py-2.5 rounded-xl text-center">
+                        <div class="text-[10px] uppercase font-bold text-slate-400">Dono da PEG</div>
+                        <div class="text-xs font-extrabold text-brand-500 flex items-center gap-1.5 mt-0.5" id="active-trap-owner">
+                            <i class="fa-solid fa-user-tie"></i> GT (ROI)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pipeline Visual das 5 Fases da PEG -->
+            <div class="bg-dark-800 border border-slate-800 rounded-2xl p-6 shadow-xl">
+                <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-6 flex items-center gap-2">
+                    <i class="fa-solid fa-arrows-spin text-brand-500"></i>
+                    O Pipeline de Valor Operacional (Miro/Lovable)
+                </h3>
+                
+                <!-- Diagrama com conexões -->
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-4 relative">
+                    <!-- Fase 1: Brainstorm -->
+                    <div onclick="switchStage(1)" id="phase-card-1" class="cursor-pointer border-2 border-brand-600 bg-brand-600/5 rounded-xl p-4 transition-all hover:scale-102 flex flex-col justify-between h-40">
+                        <div class="flex justify-between items-start">
+                            <span class="bg-brand-600/20 text-brand-500 font-extrabold text-xs px-2.5 py-1 rounded-md">01</span>
+                            <i class="fa-solid fa-lightbulb text-brand-500 text-lg"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold text-white uppercase tracking-wider">Brainstorm</h4>
+                            <p class="text-[10px] text-slate-300 mt-1 leading-snug">Geração de Hipóteses com base no sintoma.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Fase 2: Prioritize -->
+                    <div onclick="switchStage(2)" id="phase-card-2" class="cursor-pointer border border-slate-800 bg-dark-900 rounded-xl p-4 transition-all hover:scale-102 flex flex-col justify-between h-40">
+                        <div class="flex justify-between items-start">
+                            <span class="bg-slate-800 text-slate-400 font-extrabold text-xs px-2.5 py-1 rounded-md" id="phase-number-2">02</span>
+                            <i class="fa-solid fa-arrow-down-9-1 text-slate-400 text-lg" id="phase-icon-2"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider" id="phase-title-2">Prioritize</h4>
+                            <p class="text-[10px] text-slate-500 mt-1 leading-snug" id="phase-desc-2">Uso do ICE Score para ordenar o backlog.</p>
+                        </div>
+                    </div>
+
+                    <!-- Fase 3: Build -->
+                    <div onclick="switchStage(3)" id="phase-card-3" class="cursor-pointer border border-slate-800 bg-dark-900 rounded-xl p-4 transition-all hover:scale-102 flex flex-col justify-between h-40">
+                        <div class="flex justify-between items-start">
+                            <span class="bg-slate-800 text-slate-400 font-extrabold text-xs px-2.5 py-1 rounded-md" id="phase-number-3">03</span>
+                            <i class="fa-solid fa-hammer text-slate-400 text-lg" id="phase-icon-3"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider" id="phase-title-3">Build</h4>
+                            <p class="text-[10px] text-slate-500 mt-1 leading-snug" id="phase-desc-3">Construção técnica e operacional da PEG.</p>
+                        </div>
+                    </div>
+
+                    <!-- Fase 4: Test -->
+                    <div onclick="switchStage(4)" id="phase-card-4" class="cursor-pointer border border-slate-800 bg-dark-900 rounded-xl p-4 transition-all hover:scale-102 flex flex-col justify-between h-40">
+                        <div class="flex justify-between items-start">
+                            <span class="bg-slate-800 text-slate-400 font-extrabold text-xs px-2.5 py-1 rounded-md" id="phase-number-4">04</span>
+                            <i class="fa-solid fa-play text-slate-400 text-lg" id="phase-icon-4"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider" id="phase-title-4">Test</h4>
+                            <p class="text-[10px] text-slate-500 mt-1 leading-snug" id="phase-desc-4">Experimento no ar para colher dados.</p>
+                        </div>
+                    </div>
+
+                    <!-- Fase 5: Analyze -->
+                    <div onclick="switchStage(5)" id="phase-card-5" class="cursor-pointer border border-slate-800 bg-dark-900 rounded-xl p-4 transition-all hover:scale-102 flex flex-col justify-between h-40 col-span-2 md:col-span-1">
+                        <div class="flex justify-between items-start">
+                            <span class="bg-slate-800 text-slate-400 font-extrabold text-xs px-2.5 py-1 rounded-md" id="phase-number-5">05</span>
+                            <i class="fa-solid fa-chart-line text-slate-400 text-lg" id="phase-icon-5"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider" id="phase-title-5">Analyze</h4>
+                            <p class="text-[10px] text-slate-500 mt-1 leading-snug" id="phase-desc-5">Review e validação matemática de ROI.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Informações Detalhadas da Etapa Selecionada -->
+            <div class="bg-dark-800 border border-slate-800 rounded-2xl p-6 shadow-xl">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-800 pb-4 mb-6">
+                    <h3 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-circle-info text-brand-500"></i>
+                        Execução da Fase: <span id="current-stage-title" class="text-brand-500 normal-case">01 - Brainstorm</span>
+                    </h3>
+                    <div class="text-xs bg-slate-800 px-3 py-1 rounded-lg text-slate-400 flex items-center gap-2">
+                        <span>Responsabilidade:</span>
+                        <strong class="text-slate-200" id="current-stage-resp">Account (P.O.) + GT</strong>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- O que deve ser feito (Instrução Operacional) -->
+                    <div class="bg-dark-900/40 p-5 rounded-xl border border-slate-800/80">
+                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-clipboard-list text-brand-500"></i> O que deve ser feito
+                        </h4>
+                        <ul class="text-xs text-slate-300 space-y-3 leading-relaxed" id="current-stage-todo">
+                            <!-- Inserido dinamicamente -->
+                        </ul>
+                    </div>
+
+                    <!-- Dados do Backlog (Automatizado) -->
+                    <div class="bg-dark-900/40 p-5 rounded-xl border border-slate-800/80">
+                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-database text-brand-500"></i> Conteúdo Dinâmico da PEG
+                        </h4>
+                        <div class="space-y-4 text-xs text-slate-300">
+                            <div>
+                                <span class="text-[10px] uppercase font-bold text-slate-500 block mb-1">Métrica Chave do Teste (KPI)</span>
+                                <div class="bg-dark-900 border border-slate-800 p-2.5 rounded-lg font-mono text-slate-200 flex items-center gap-2">
+                                    <i class="fa-solid fa-bullseye text-brand-500"></i>
+                                    <span id="active-trap-metric">Custo por Clique (CPC) e CPM</span>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="text-[10px] uppercase font-bold text-slate-500 block mb-1">Ação de Backlog Interno</span>
+                                <div class="bg-dark-900 border border-slate-800 p-2.5 rounded-lg text-slate-200 flex items-start gap-2">
+                                    <i class="fa-solid fa-list-check text-brand-500 mt-0.5"></i>
+                                    <span id="active-trap-backlog">Otimização de criativos de topo, abertura de novos canais de tráfego, rebalanço de verba mestre.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Template de Alinhamento (O Roteiro com o Cliente) -->
+                <div class="mt-6 bg-slate-900/50 border border-slate-800 p-5 rounded-xl">
+                    <div class="flex justify-between items-center mb-3">
+                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-comment-dots text-brand-500"></i>
+                            Roteiro de Alinhamento com o Investidor (Gestão de Expectativa)
+                        </h4>
+                        <button onclick="copyScript()" class="text-[10px] bg-slate-800 border border-slate-700 hover:bg-slate-700 text-slate-300 px-3 py-1 rounded-md transition-colors flex items-center gap-1.5">
+                            <i class="fa-regular fa-copy"></i> Copiar
+                        </button>
+                    </div>
+                    <div class="bg-dark-900 border border-slate-800 p-4 rounded-lg font-mono text-xs text-slate-300 leading-relaxed border-l-4 border-l-brand-600" id="active-trap-script">
+                        <!-- Inserido dinamicamente -->
+                    </div>
+                </div>
+            </div>
+            
+        </section>
+        
+    </main>
+
+    <footer class="max-w-7xl mx-auto px-6 mt-12 border-t border-slate-800 pt-6 text-center text-xs text-slate-500 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div>
+            Mantra da Unidade: <span class="italic text-slate-400">"Grandeza é produto de coerência e foco."</span>
+        </div>
+        <div class="flex items-center gap-3">
+            <span class="bg-slate-800 text-slate-400 px-2 py-1 rounded">V4 Company // Equity Force</span>
+        </div>
+    </footer>
+
+    <script>
+        // Estrutura de Dados das 14 Travas Customizadas
+        const TRAPS_DATABASE = {
+            volume_atracao: {
+                title: "Volume de Atração Insuficiente",
+                category: "Performance / Funil",
+                categoryIcon: "fa-solid fa-filter",
+                color: "yellow-500",
+                owner: "GT (Estrategista de ROI)",
+                metric: "Custo por Clique (CPC), CPC do criativo e Custo por Mil (CPM)",
+                backlog: "Otimização de criativos de topo, abertura de novos canais de tráfego, rebalanço de verba mestre.",
+                script: "Sr. Investidor, o foco do nosso squad este mês é destravar a sua restrição de Volume de Atração Insuficiente para buscar o seu alvo de faturamento. Focaremos 100% da capacidade técnica em testes de novos criativos e canais de tráfego no topo de funil para garantir cliques qualificados. Outras demandas fora desse foco serão despriorizadas temporariamente."
+            },
+            gargalo_comercial: {
+                title: "Gargalo de Conversão Comercial",
+                category: "Performance / Funil",
+                categoryIcon: "fa-solid fa-filter",
+                color: "yellow-500",
+                owner: "GT (ROI) + Account (P.O.)",
+                metric: "Taxa de passagem de leads no pipeline do CRM (MQL para SQL)",
+                backlog: "Auditoria do pipeline no Kommo CRM, criação de automações/webhooks de passagem de lead, tags de perda.",
+                script: "Sr. Investidor, com base no SPICED de hoje, sua restrição está na passagem do lead para o comercial (Conversão Comercial). O squad focará em mapear e automatizar as etapas do seu Kommo CRM. Faremos isso para garantir que nenhum lead qualificado seja perdido pela equipe interna de vendas."
+            },
+            custo_aquisicao: {
+                title: "Custo de Aquisição",
+                category: "Performance / Funil",
+                categoryIcon: "fa-solid fa-filter",
+                color: "yellow-500",
+                owner: "GT (Estrategista de ROI)",
+                metric: "Custo de Aquisição de Clientes (CAC) e ROI Financeiro",
+                backlog: "Limpeza de públicos caros, foco em campanhas de LTV/Retenção, engenharia reversa de margem de contribuição.",
+                script: "Sr. Investidor, nossa meta prioritária é reequilibrar o seu Custo de Aquisição (CAC) para salvar sua margem. O squad desativará campanhas caras e focará em inteligência de remarketing e dados históricos. O volume bruto de leads pode flutuar, mas a rentabilidade por venda será resguardada."
+            },
+            perda_posicionamento: {
+                title: "Perda de Posicionamento / Audiência Fria",
+                category: "Social Media / Branding",
+                categoryIcon: "fa-solid fa-bullhorn",
+                color: "orange-500",
+                owner: "DSG (Designer e Social Media)",
+                metric: "CTR (Click-Through Rate) dos criativos de engajamento e alcance",
+                backlog: "Iteração ágil de criativos de alta performance, reformulação de identidade visual de rede, novos eixos de conteúdo.",
+                script: "Sr. Investidor, identificamos uma queda de engajamento decorrente de perda de posicionamento. O foco do DSG este mês será redesenhar a linha editorial e criar criativos de CTR elevado para aquecer sua audiência nas redes. O foco aqui é construir patrimônio de marca sustentável."
+            },
+            alcance_estagnado: {
+                title: "Alcance e Distribuição Estagnados",
+                category: "Social Media / Branding",
+                categoryIcon: "fa-solid fa-bullhorn",
+                color: "orange-500",
+                owner: "DSG + GT (Mídia)",
+                metric: "Volume bruto de Contas Alcançadas e Custo por 1.000 pessoas alcançadas (CPR)",
+                backlog: "Criação de ativos focados em viralização, campanhas de impulsionamento de tráfego para ganho de base.",
+                script: "Sr. Investidor, suas redes sociais têm excelente qualidade estética, mas o alcance está estagnado. O squad focará em formatar campanhas de distribuição paga com criativos em vídeo para impulsionar seus melhores posts orgânicos para novos públicos."
+            },
+            sales_enablement: {
+                title: "Sales Enablement / Sem Liderança Comercial",
+                category: "Estrutura Comercial",
+                categoryIcon: "fa-solid fa-shop",
+                color: "brand-500",
+                owner: "Account (P.O.) + GT",
+                metric: "Percentual (%) de campos obrigatórios preenchidos corretamente no CRM",
+                backlog: "Criação de relatórios automatizados de Leads sem Tarefa, auditoria semanal do preenchimento de dados de vendas do cliente.",
+                script: "Sr. Investidor, o marketing está entregando os leads, mas identificamos uma trava de Sales Enablement (falta de cobrança no uso do CRM). Apresentaremos semanalmente relatórios de auditoria do Kommo CRM ao senhor para que lidere a cobrança de preenchimento do time comercial."
+            },
+            capacidade_comercial: {
+                title: "Capacidade Operacional Comercial",
+                category: "Estrutura Comercial",
+                categoryIcon: "fa-solid fa-shop",
+                color: "brand-500",
+                owner: "Account (P.O.) - Consultivo",
+                metric: "Tempo médio de resposta do lead comercial (Response Time)",
+                backlog: "Bloqueio temporário de escala de mídia para proteger o caixa; estruturação de playbook emergencial de processos de atendimento.",
+                script: "Sr. Investidor, detectamos que o volume de leads gerados excedeu a capacidade de atendimento do seu time interno. Reduziremos temporariamente o ritmo de investimento em mídia para proteger o seu caixa, até que os novos vendedores sejam treinados."
+            },
+            ausencia_sdr: {
+                title: "Ausência de Pré-Vendas / SDR",
+                category: "Estrutura Comercial",
+                categoryIcon: "fa-solid fa-shop",
+                color: "brand-500",
+                owner: "GT + Account",
+                metric: "Taxa de qualificação de leads (SQL / MQL)",
+                backlog: "Implementação de formulários de qualificação prévia com perguntas excludentes nas landing pages.",
+                script: "Sr. Investidor, identificamos que seus vendedores comerciais de alta conversão estão perdendo tempo com curiosos. O squad implementará barreiras de qualificação e formulários rígidos de triagem antes de liberar o contato com os vendedores finais."
+            },
+            estouro_sla: {
+                title: "SLA de Atendimento Compromissado",
+                category: "Estrutura Comercial",
+                categoryIcon: "fa-solid fa-shop",
+                color: "brand-500",
+                owner: "GT (Engenharia de Automações)",
+                metric: "Tempo de primeiro contato (SLA ideal < 5 min)",
+                backlog: "Montagem de notificações urgentes e automações sonoras no celular dos vendedores integradas com o CRM.",
+                script: "Sr. Investidor, seus leads estão esfriando devido ao estouro de SLA de contato do seu time de vendas. Configuraremos automações emergenciais que notificam os vendedores instantaneamente por WhatsApp sempre que um lead novo chegar."
+            },
+            pos_vendas: {
+                title: "Inexistência de Pós-Venda e Retenção",
+                category: "Estrutura Comercial",
+                categoryIcon: "fa-solid fa-shop",
+                color: "brand-500",
+                owner: "Account + GT",
+                metric: "Taxa de recompra na base ativa (LTV) e novos leads vindos de indicação",
+                backlog: "Estruturação de régua de e-mail marketing pós-venda, pesquisa de NPS e funil orgânico de indicações.",
+                script: "Sr. Investidor, sua máquina de aquisição de clientes é eficiente, mas a sua retenção interna (pós-venda) está fragilizada, gerando vazamento na base. O squad implementará um fluxo de pós-venda automatizado no CRM para medir o NPS e buscar indicações."
+            },
+            capacitacao_profissional: {
+                title: "Defasagem Técnica e Falta de Capacitação",
+                category: "Estrutura Comercial",
+                categoryIcon: "fa-solid fa-shop",
+                color: "brand-500",
+                owner: "Account (P.O.) + CSM (Monetização)",
+                metric: "Taxa de fechamento comercial do time (Vendas / Leads)",
+                backlog: "Apresentação e venda do nosso Treinamento Comercial Customizado para a equipe do cliente; pausa em testes de mídia caros.",
+                script: "Sr. Investidor, identificamos um gargalo severo na taxa de conversão final por falta de capacitação profissional em vendas no seu time. Focaremos todos os nossos rituais na ativação imediata do nosso Treinamento Comercial para capacitar o seu time."
+            },
+            cegueira_dados: {
+                title: "Cegueira de Dados",
+                category: "Dados / Automação",
+                categoryIcon: "fa-solid fa-code",
+                color: "teal-500",
+                owner: "GT (Estrategista de ROI)",
+                metric: "Disponibilidade de relatórios de funil no Manus e integridade de dados",
+                backlog: "Construção/correção de Dashboards no Manus, consolidação estrutural do GrowthPack.",
+                script: "Sr. Investidor, antes de escalarmos qualquer tática ou verba este mês, focaremos em consertar a rastreabilidade e entregar o Dashboard Manus corrigido em até 48h. Precisamos enxergar com exatidão onde o seu caixa está sendo alocado."
+            },
+            processo_manual: {
+                title: "Processo Comercial Manual",
+                category: "Dados / Automação",
+                categoryIcon: "fa-solid fa-code",
+                color: "teal-500",
+                owner: "GT (Estrategista de ROI)",
+                metric: "Horas de trabalho mecânico do cliente economizadas através de automações",
+                backlog: "Integração do fluxo de leads de entrada com disparo de mensagens automáticas de follow-up por robô comercial.",
+                script: "Sr. Investidor, seu time de vendas passa horas do dia organizando dados manuais. O squad implementará integrações de API automáticas para encaminhar o lead diretamente ao WhatsApp dos vendedores com mensagens já digitadas."
+            },
+            quebra_rastreabilidade: {
+                title: "Quebra de Rastreabilidade",
+                category: "Dados / Automação",
+                categoryIcon: "fa-solid fa-code",
+                color: "teal-500",
+                owner: "GT (Estrategista de ROI)",
+                metric: "Taxa de correspondência (Match Rate) de eventos do Pixel e API de Conversão",
+                backlog: "Auditoria assíncrona do pixel de conversão Meta, reinstalação de webhooks GTM e diagnóstico de API de Conversão.",
+                script: "Sr. Investidor, detectamos uma quebra na rastreabilidade devido a instabilidade no Pixel e na API. O estrategista de ROI reconfigurará as conexões para garantir que a inteligência de anúncios de Meta e Google leia as compras com precisão."
+            }
+        };
+
+        // Estado da Interface
+        let currentTrap = "volume_atracao";
+        let currentStage = 1;
+
+        // Dados explicativos para cada Etapa do Framework PEG
+        const STAGE_DETAILS = {
+            1: {
+                title: "01 - Brainstorm",
+                resp: "Account (P.O.) + GT",
+                todo: [
+                    "A CSM inicia o processo enviando o Briefing SPICED do cliente contendo Sintoma de Negócio, a Restrição Selecionada, o Impacto no Caixa e a Data Limite.",
+                    "O Account, GT e DSG se reúnem na Daily ou reunião de pauta técnica para desenhar as hipóteses focadas exclusivamente em destravar a restrição indicada.",
+                    "Suba o briefing no Claude Projects da conta e peça: 'Com base no SPICED atual, gere 3 hipóteses no formato: Se/Então/Porque'."
+                ]
+            },
+            2: {
+                title: "02 - Prioritize",
+                resp: "Account (P.O.) + GT",
+                todo: [
+                    "Evite achismos ou intuições subjetivas: cada hipótese gerada na coluna 1 deve ser avaliada e pontuada de 1 a 10 usando a escala ICE Score.",
+                    "Pontue: <strong>Impacto</strong> (O quanto isso resolve a trava?), <strong>Confiança</strong> (O quanto acreditamos que vai funcionar?) e <strong>Facilidade</strong> (Esforço técnico/operacional).",
+                    "O Lovable ordena as sub-tasks de cima para baixo com base na pontuação média. Os experimentos com maior pontuação entram na fila de execução imediatamente."
+                ]
+            },
+            3: {
+                title: "03 - Build",
+                resp: "Squad Técnico (GT / DSG)",
+                todo: [
+                    "A fase de produção se inicia sem gargalos de comunicação ou telefones sem fio entre as cadeiras.",
+                    "O <strong>DSG</strong> cria os materiais visuais com foco exclusivo em CTR e Engajamento, mandando o material diretamente para a aprovação do investidor.",
+                    "O <strong>GT</strong> escreve as regras de automação, configura as APIs ou programa as integrações de CRM necessárias no Kommo."
+                ]
+            },
+            4: {
+                title: "04 - Test",
+                resp: "GT (Estrategista de ROI)",
+                todo: [
+                    "A PEG entra em fase de validação ativa (mídia no ar, automação rodando no Kommo CRM ou nova estratégia editorial publicada).",
+                    "O tempo de duração do teste deve respeitar rigorosamente a Data Limite (Deadline do Evento Crítico) mapeada pela CSM.",
+                    "O Account defende o SLA com o cliente, garantindo que o experimento esteja executando perfeitamente."
+                ]
+            },
+            5: {
+                title: "05 - Analyze",
+                resp: "GT (ROI) + Account (P.O.)",
+                todo: [
+                    "Fase crítica de tomada de decisões corporativas: o GT extrai os dados brutos e usa o Claude para avaliar o resultado em comparação com a métrica alvo.",
+                    "<strong>Se Validada (Atingiu a meta):</strong> O experimento é incorporado ao processo permanente do cliente e escalado pelo Account.",
+                    "<strong>Se Inválida:</strong> O time documenta os aprendizados no NotebookLM, gera o relatório interpretativo e arquiva a tarefa gerando novas hipóteses."
+                ]
+            }
+        };
+
+        // Gerenciador do Acordeon
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            
+            if (content.classList.contains("hidden")) {
+                content.classList.remove("hidden");
+                icon.classList.add("rotate-180");
+            } else {
+                content.classList.add("hidden");
+                icon.classList.remove("rotate-180");
+            }
+        }
+
+        // Função para Selecionar uma Trava de Negócio
+        function selectTrap(trapId) {
+            // Remove bordas e destaque dos botões antigos
+            const buttons = document.querySelectorAll("#traps-accordion button[id^='btn-']");
+            buttons.forEach(btn => {
+                btn.classList.remove("bg-slate-800", "border-brand-500", "text-white");
+                btn.classList.add("text-slate-300", "border-transparent");
+            });
+
+            // Adiciona destaque ao botão ativo
+            const currentBtn = document.getElementById(`btn-${trapId}`);
+            if (currentBtn) {
+                currentBtn.classList.remove("text-slate-300", "border-transparent");
+                currentBtn.classList.add("bg-slate-800", "border-brand-500", "text-white");
+            }
+
+            // Atualiza os dados na tela
+            const trap = TRAPS_DATABASE[trapId];
+            if (trap) {
+                currentTrap = trapId;
+                document.getElementById("active-trap-title").textContent = trap.title;
+                document.getElementById("active-trap-category").textContent = trap.category;
+                document.getElementById("active-trap-category-icon").className = trap.categoryIcon + " text-slate-400";
+                document.getElementById("active-trap-owner").innerHTML = `<i class="fa-solid fa-user-tie"></i> ${trap.owner}`;
+                document.getElementById("active-trap-metric").textContent = trap.metric;
+                document.getElementById("active-trap-backlog").textContent = trap.backlog;
+                document.getElementById("active-trap-script").textContent = trap.script;
+
+                // Trocar cor da borda de destaque conforme a categoria
+                const borderAccent = document.getElementById("top-border-accent");
+                borderAccent.className = "absolute top-0 left-0 h-1.5 w-full";
+                
+                if (trap.category.includes("Funil")) {
+                    borderAccent.classList.add("bg-yellow-500");
+                    document.getElementById("active-trap-owner").className = "text-xs font-extrabold text-yellow-500 flex items-center gap-1.5 mt-0.5";
+                } else if (trap.category.includes("Social")) {
+                    borderAccent.classList.add("bg-orange-500");
+                    document.getElementById("active-trap-owner").className = "text-xs font-extrabold text-orange-500 flex items-center gap-1.5 mt-0.5";
+                } else if (trap.category.includes("Dados")) {
+                    borderAccent.classList.add("bg-teal-500");
+                    document.getElementById("active-trap-owner").className = "text-xs font-extrabold text-teal-500 flex items-center gap-1.5 mt-0.5";
+                } else {
+                    borderAccent.classList.add("bg-brand-600");
+                    document.getElementById("active-trap-owner").className = "text-xs font-extrabold text-brand-500 flex items-center gap-1.5 mt-0.5";
+                }
+            }
+        }
+
+        // Função para Alternar de Fase no Pipeline PEG
+        function switchStage(stageId) {
+            currentStage = stageId;
+            
+            // Remove estilos ativos de todos os cards
+            for(let i = 1; i <= 5; i++) {
+                const card = document.getElementById(`phase-card-${i}`);
+                const number = document.getElementById(`phase-number-${i}`);
+                const icon = document.getElementById(`phase-icon-${i}`);
+                const title = document.getElementById(`phase-title-${i}`);
+                const desc = document.getElementById(`phase-desc-${i}`);
+
+                if(card) {
+                    card.className = "cursor-pointer border border-slate-800 bg-dark-900 rounded-xl p-4 transition-all hover:scale-102 flex flex-col justify-between h-40";
+                    if (i === 5) card.classList.add("col-span-2", "md:col-span-1");
+                }
+                if(number) number.className = "bg-slate-800 text-slate-400 font-extrabold text-xs px-2.5 py-1 rounded-md";
+                if(icon) icon.className = icon.className.replace("text-brand-500", "text-slate-400");
+                if(title) title.className = "text-xs font-bold text-slate-400 uppercase tracking-wider";
+                if(desc) desc.className = "text-[10px] text-slate-500 mt-1 leading-snug";
+            }
+
+            // Ativa o card selecionado
+            const activeCard = document.getElementById(`phase-card-${stageId}`);
+            if (activeCard) {
+                activeCard.className = "cursor-pointer border-2 border-brand-600 bg-brand-600/5 rounded-xl p-4 transition-all hover:scale-102 flex flex-col justify-between h-40";
+                if (stageId === 5) activeCard.classList.add("col-span-2", "md:col-span-1");
+            }
+            
+            const activeNumber = document.getElementById(`phase-number-${stageId}`);
+            if (activeNumber) activeNumber.className = "bg-brand-600/20 text-brand-500 font-extrabold text-xs px-2.5 py-1 rounded-md";
+            
+            const activeIcon = document.getElementById(`phase-icon-${stageId}`);
+            if (activeIcon) activeIcon.className = activeIcon.className.replace("text-slate-400", "text-brand-500");
+            
+            const activeTitle = document.getElementById(`phase-title-${stageId}`);
+            if (activeTitle) activeTitle.className = "text-xs font-bold text-white uppercase tracking-wider";
+            
+            const activeDesc = document.getElementById(`phase-desc-${stageId}`);
+            if (activeDesc) activeDesc.className = "text-[10px] text-slate-300 mt-1 leading-snug";
+
+            // Atualiza os dados explicativos detalhados na tela
+            const stage = STAGE_DETAILS[stageId];
+            if (stage) {
+                document.getElementById("current-stage-title").textContent = stage.title;
+                document.getElementById("current-stage-resp").textContent = stage.resp;
+                
+                const todoList = document.getElementById("current-stage-todo");
+                todoList.innerHTML = "";
+                stage.todo.forEach(item => {
+                    const li = document.createElement("li");
+                    li.className = "flex items-start gap-2.5";
+                    li.innerHTML = `<i class="fa-solid fa-angle-right text-brand-500 mt-0.5"></i> <span>${item}</span>`;
+                    todoList.appendChild(li);
+                });
+            }
+        }
+
+        // Copiar Roteiro de Alinhamento
+        function copyScript() {
+            const scriptText = document.getElementById("active-trap-script").innerText;
+            const textarea = document.createElement("textarea");
+            textarea.value = scriptText;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            
+            // Notificação Customizada (sem alert)
+            const copyBtn = document.querySelector("button[onclick='copyScript()']");
+            const originalText = copyBtn.innerHTML;
+            copyBtn.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-500"></i> Copiado!`;
+            setTimeout(() => {
+                copyBtn.innerHTML = originalText;
+            }, 2000);
+        }
+
+        // Executado no carregamento da página
+        window.onload = function() {
+            selectTrap("volume_atracao");
+            switchStage(1);
+        };
+    </script>
+</body>
+</html>
